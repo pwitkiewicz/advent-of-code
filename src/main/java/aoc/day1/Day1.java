@@ -1,35 +1,14 @@
 package aoc.day1;
 
+import aoc.utility.Reader;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class Main {
-    private static List<Integer> readFile(String filename) {
-        List<Integer> input = new ArrayList<>();
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(filename)) ){
-            String line = reader.readLine();
-
-            while (line != null) {
-                input.add(Integer.parseInt(line));
-                line = reader.readLine();
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return input;
-    }
-
+public class Day1 {
     public static long countIncreases(List<Integer> input) {
         Iterator<Integer> iterator = input.iterator();
         Integer measurement = iterator.next();
@@ -62,7 +41,7 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        List<Integer> input = readFile("input");
+        List<Integer> input = Reader.readLinesAsIntegers("input");
 
         System.out.println(countIncreases(input));
         System.out.println(countIncreasesByThree(input));
