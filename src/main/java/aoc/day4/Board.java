@@ -42,13 +42,13 @@ public class Board {
     }
 
     public boolean markNumber(final int number) {
-        var anyMarked = false;
         for (BoardRow row : rows) {
             if (row.markNumber(number)) {
-                anyMarked = true;
+                won = true;
             }
         }
-        return anyMarked;
+
+        return won;
     }
 
     public int getScore() {
