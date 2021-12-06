@@ -11,7 +11,7 @@ public class Day5 {
     private static List<Line> parseInput(final List<String> input) {
         final var output = new ArrayList<Line>();
 
-        for(String s : input) {
+        for (String s : input) {
             String[] temp = s.trim().split(" -> ");
             var points = new ArrayList<Integer>();
             for (int i = 0; i < 2; i++) {
@@ -30,7 +30,7 @@ public class Day5 {
             for (int j = 0; j < 1000; j++) {
                 int overlapping = 0;
                 for (Line line : input) {
-                    overlapping += line.checkPoint(i,j) ? 1 : 0;
+                    overlapping += line.checkPoint(i, j) ? 1 : 0;
                 }
                 counter += overlapping > 1 ? 1 : 0;
             }

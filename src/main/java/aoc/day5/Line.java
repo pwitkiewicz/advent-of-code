@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class Line {
-    private static double RADIANS = Math.PI/4;
+    private static double RADIANS = Math.PI / 4;
     private static double EPSILON = 0.1;
     private double x1;
     private double y1;

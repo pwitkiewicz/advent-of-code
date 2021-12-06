@@ -14,7 +14,7 @@ public class Day1 {
         Integer measurement = iterator.next();
         long increases = 0;
 
-        while(iterator.hasNext()) {
+        while (iterator.hasNext()) {
             Integer currentMeasurement = iterator.next();
             increases += currentMeasurement > measurement ? 1 : 0;
             measurement = currentMeasurement;
@@ -30,7 +30,7 @@ public class Day1 {
         Measurement measurement = Measurement.of(inputArray, index);
         long increases = 0;
 
-        while(index + 1 < inputArray.length) {
+        while (index + 1 < inputArray.length) {
             index++;
             Measurement currentMeasurement = Measurement.of(inputArray, index);
             increases += currentMeasurement.getValue() > measurement.getValue() ? 1 : 0;
@@ -54,6 +54,6 @@ class Measurement {
     private long value;
 
     public static Measurement of(final Integer[] input, final int index) {
-        return new Measurement(input[index-2] + input[index-1] + input[index]);
+        return new Measurement(input[index - 2] + input[index - 1] + input[index]);
     }
 }

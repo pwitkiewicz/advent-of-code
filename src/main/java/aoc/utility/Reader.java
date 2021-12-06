@@ -13,7 +13,7 @@ public class Reader {
     public static List<Integer> readLinesAsIntegers(String filename) {
         List<Integer> input = new ArrayList<>();
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(filename)) ){
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
             String line = reader.readLine();
 
             while (line != null) {
@@ -31,7 +31,7 @@ public class Reader {
     public static List<String> readLinesAsStrings(String filename) {
         List<String> input = new ArrayList<>();
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(filename)) ){
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
             String line = reader.readLine();
 
             while (line != null) {

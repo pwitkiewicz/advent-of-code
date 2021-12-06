@@ -31,7 +31,7 @@ public class Day4 {
 
                 if (!currentBoard.isWon() && currentBoard.markNumber(number)) {
                     var score = boardsList.get(i).getScore();
-                    var string = String.format("winning board %d with score %d", i+1, score * number);
+                    var string = String.format("winning board %d with score %d", i + 1, score * number);
                     System.out.println(string);
                 }
             }
