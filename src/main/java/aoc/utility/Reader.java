@@ -6,10 +6,27 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @UtilityClass
 public class Reader {
+    public static List<Integer> readCsvAsIntegers(String filename) {
+        String input;
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            input = reader.readLine();
+            return Arrays.stream(input.trim().split(",")).map(Integer::parseInt).collect(Collectors.toList());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return Collections.emptyList();
+    }
+
     public static List<Integer> readLinesAsIntegers(String filename) {
         List<Integer> input = new ArrayList<>();
 
