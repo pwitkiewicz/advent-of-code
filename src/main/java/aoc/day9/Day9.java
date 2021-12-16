@@ -1,44 +1,43 @@
 package aoc.day9;
 
+import aoc.utility.Point;
 import aoc.utility.Reader;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class Day9 {
-    private static final int OUT_OF_BOUNDS_VALUE = 9;
-
-    private static int tryGetPoint(final List<String> input,
-                                   final int x,
-                                   final int y,
-                                   final int diffx,
-                                   final int diffy) {
+    private static Optional<Point> getPointWithValue(final List<String> input, final Point point) {
         try {
-            return Character.getNumericValue(input.get(x + diffx).charAt(y + diffy));
+            var value = Character.getNumericValue(input.get(point.x()).charAt(point.y()));
+            return Optional.of(new Point(point.x(), point.y(), value));
         } catch (IndexOutOfBoundsException e) {
-            return OUT_OF_BOUNDS_VALUE;
+            return Optional.empty();
         }
     }
 
-    private static boolean isLowPoint(final List<String> input, final int x, final int y) {
-        var adjacentPoints = new ArrayList<Integer>();
+    private static boolean isLowPoint(final List<String> input, final Point point) {
+        final var adjacentPointValues = new ArrayList<Integer>();
+
         for (int i = -1; i <= 1; i += 2) {
-            adjacentPoints.add(tryGetPoint(input, x, y, i, 0));
-            adjacentPoints.add(tryGetPoint(input, x, y, 0, i));
+            getPointWithValue(input, new Point(point.x() + i, point.y(), -1)).
+                    ifPresent(p -> adjacentPointValues.add(p.value()));
+
+            getPointWithValue(input, new Point(point.x(), point.y() + i, -1))
+                    .ifPresent(p -> adjacentPointValues.add(p.value()));
         }
 
-        var point = Character.getNumericValue(input.get(x).charAt(y));
-        return adjacentPoints.stream().noneMatch(t -> t <= point);
+        return adjacentPointValues.stream().noneMatch(t -> t <= point.value());
     }
 
     private static int findSumOfLowPoints(final List<String> input) {
-        var sum = new ArrayList<Integer>();
+        final var sum = new ArrayList<Integer>();
 
         for (int i = 0; i < input.size(); i++) {
             for (int j = 0; j < input.get(i).length(); j++) {
-                if (isLowPoint(input, i, j)) {
-                    var point = input.get(i).charAt(j);
-                    sum.add(Character.getNumericValue(point) + 1);
+                final var point = new Point(i, j, Character.getNumericValue(input.get(i).charAt(j)));
+                if (isLowPoint(input, point)) {
+                    sum.add(point.value() + 1);
                 }
             }
         }
@@ -46,40 +45,33 @@ public class Day9 {
         return sum.stream().reduce(Integer::sum).orElseThrow();
     }
 
-    private static void enqueuePoint(final List<String> input, final Queue<Integer> queue, final boolean[][] visited, final int x, final int y,
-                                     final int diffx, final int diffy) {
-        var currentx = x + diffx;
-        var currenty = y + diffy;
-
-        var temp = tryGetPoint(input, x, y, diffx, diffy);
-
-        if (temp != OUT_OF_BOUNDS_VALUE && !visited[currentx][currenty]) {
-            queue.add((currentx) * 1000 + currenty * 10);
-        }
+    private static void enqueuePoint(final List<String> input,
+                                     final Queue<Point> queue,
+                                     final Set<Point> visited,
+                                     final Point point) {
+        getPointWithValue(input, point).ifPresent(p -> {
+            if (p.value() != 9 && !visited.contains(p)) {
+                queue.add(p);
+            }
+        });
     }
 
-    private static long findBasinSize(final List<String> input, final boolean[][] visited, int x, int y) {
-        var queue = new LinkedList<Integer>();
-        var point = x * 1000 + y * 10;
+    private static long findBasinSize(final List<String> input, final Set<Point> visited, final Point startingPoint) {
+        var queue = new LinkedList<Point>();
         var size = 0L;
-        queue.add(point);
+        queue.add(startingPoint);
 
         while (!queue.isEmpty()) {
-            var currentPoint = queue.pop();
-            int currentX = currentPoint / 1000;
-            int currentY = (currentPoint - currentX * 1000) / 10;
+            var point = queue.pop();
 
-            if (visited[currentX][currentY]) continue;
+            if (!visited.contains(point)) {
+                size++;
+                visited.add(point);
 
-            var value = Character.valueOf(input.get(currentX).charAt(currentY));
-
-            visited[currentX][currentY] = true;
-
-            size++;
-
-            for (int i = -1; i <= 1; i += 2) {
-                enqueuePoint(input, queue, visited, currentX, currentY, i, 0);
-                enqueuePoint(input, queue, visited, currentX, currentY, 0, i);
+                for (int i = -1; i <= 1; i += 2) {
+                    enqueuePoint(input, queue, visited, new Point(point.x() + i, point.y(), -1));
+                    enqueuePoint(input, queue, visited, new Point(point.x(), point.y() + i, -1));
+                }
             }
         }
 
@@ -87,13 +79,14 @@ public class Day9 {
     }
 
     private static long findMultiplyOfThreeLargestBasins(final List<String> input) {
-        boolean[][] visited = new boolean[input.size()][input.get(0).length()];
+        Set<Point> visited = new HashSet<>();
         var sizes = new ArrayList<Long>();
 
         for (int i = 0; i < input.size(); i++) {
             for (int j = 0; j < input.get(i).length(); j++) {
-                if (!visited[i][j] && Character.getNumericValue(input.get(i).charAt(j)) != 9) {
-                    sizes.add(findBasinSize(input, visited, i, j));
+                var point = new Point(i, j, Character.getNumericValue(input.get(i).charAt(j)));
+                if (!visited.contains(point) && point.value() != 9) {
+                    sizes.add(findBasinSize(input, visited, point));
                 }
             }
         }
@@ -103,7 +96,7 @@ public class Day9 {
                 .limit(3)
                 .collect(Collectors.toList());
 
-        var multiply = 1;
+        var multiply = 1L;
         for (long value : biggestSizes) {
             multiply *= value;
         }
