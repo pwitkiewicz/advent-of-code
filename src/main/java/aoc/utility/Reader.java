@@ -62,4 +62,14 @@ public class Reader {
 
         return input;
     }
+
+    public static String readLineAsString(String filename) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            return reader.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 }
