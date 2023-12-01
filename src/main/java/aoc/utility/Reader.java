@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 @UtilityClass
 public class Reader {
+
     public static List<Integer> readCsvAsIntegers(String filename) {
         String input;
 
